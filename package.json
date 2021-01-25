@@ -1,0 +1,25 @@
+{
+  "name": "stake-defi-system",
+  "version": "1.0.0",
+  "description": "Staking Platform for MDT",
+  "main": "truffle-config.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Yogisam72/Stake-DeFi-System.git"
+  },
+  "author": "Yogesh Pandey",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Yogisam72/Stake-DeFi-System/issues"
+  },
+  "homepage": "https://github.com/Yogisam72/Stake-DeFi-System#readme",
+  "dependencies": {
+    "@openzeppelin/contracts": "^3.3.0"
+  }
+}
