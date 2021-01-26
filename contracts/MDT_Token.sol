@@ -3,7 +3,7 @@ pragma solidity >=0.4.17 <0.8.0;
 import "@openzeppelin\contracts\token\ERC20.sol";
 import "@openzeppelin\contracts\token\ERC20Capped.sol";
 
-contract MDT_Token is ERC20, ERC20Capped{
+contract MdtToken is ERC20, ERC20Capped{
 
 	uint256 public initialSupply = 10*(10**24);
 
