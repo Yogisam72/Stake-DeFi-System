@@ -8,11 +8,12 @@ contract StakePool{
 
     MdtToken public mdtToken;
 
+    uint reward_period = 1 months;
 
     address public owner = msg.sender;
 
     mapping (address => uint) public stakingBalance;
-    mapping (address => mapping (uint => uint)) public stakeTime;
+    mapping (address =>  uint) public stakeTime;
 	mapping (address => bool) public hasStaked;
 	mapping (address => bool) public isStaking;
 
@@ -27,13 +28,16 @@ contract StakePool{
 	function stakeTokens(uint256 _amount) public {
 
 		require (_amount > 0 , 'Amount cannot be 0!');
+
+		require (!isStaking[msg.sender], 'You can only stake after you unstake the current value!');
+		
   	
   		// Transfer MDT Tokens to this  contract for staking
 		mdtToken.transferFrom(msg.sender, address(this), _amount) ;
 
   		// Update staking balance and staking time
 		stakingBalance[msg.sender] += _amount;
-		stakeTime[msg.sender][_amount] = now;
+		stakeTime[msg.sender] = now;
 
 
   		// Add stakers to the stakers array *ONLY* if they haven't staked already
@@ -47,7 +51,9 @@ contract StakePool{
 	}
 	
 
-	function mintRewards() public {
+	function mintRewards(address _staker, uint _balance) public {
+
+		reward_time = uint((now - stakeTime[_staker])/reward_period);
 
 		
 		
@@ -60,7 +66,19 @@ contract StakePool{
 	
 	function unstakeTokens(uint256 _amount) public{
 
-	}
+		require(now > staketime[msg.sender] + 1 months , "You can't unstake the MDT Tokens for a minimum of 1 month!");
+
+		uint balance = stakingBalance[msg.sender];
+  		
+  		require (balance > 0, 'There should be some balance!');
+
+  		mintRewards(msg.sender,balance);
+
+  		mdtToken.transfer(msg.sender, balance);
+
+	  	stakingBalance[msg.sender] =0;
+	  	isStaking[msg.sender] = false;
+
 
 
 
