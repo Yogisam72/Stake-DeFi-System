@@ -1,23 +1,29 @@
 pragma solidity >=0.4.17 <0.8.0;
 
+//Imported MDT Token from contracts
 import "./MDT_Token.sol";
 
+/* @author: The StakePool contract locks the coins for staking, such that an address can stake the coin once only.
+			The effective interest rate = 0.41% which is compounded monthly. The Annual Percentage Yeild can be 
+			expected of approx 5.03%.  
+*/
 contract StakePool{
 
+	// @dev : Stake Pool System
     string public name = "Stake Pool System";
 
-    MdtToken public mdtToken;
+    MdtToken public mdtToken; //Initialized MdtToken contract
 
-    uint reward_period = 1 months;
+    uint reward_period = 1 months; // reward period is monthly
 
     address public owner = msg.sender;
 
-    mapping (address => uint) public stakingBalance;
-    mapping (address =>  uint) public stakeTime;
-	mapping (address => bool) public hasStaked;
+    mapping (address => uint) public stakingBalance; // stores staking balance for address
+    mapping (address =>  uint) public stakeTime; // stores staking time for the instant staking starts
+	mapping (address => bool) public hasStaked; 
 	mapping (address => bool) public isStaking;
 
-	address[] public stakers;
+	address[] public stakers; // address array of stakers
 
 	constructor(MdtToken _mdtToken) public{
 
@@ -55,7 +61,7 @@ contract StakePool{
 
 		reward_time = uint((now - stakeTime[_staker])/reward_period);
 
-		
+
 		
 	}
 
