@@ -10,18 +10,18 @@ import "./MDT_Token.sol";
 contract StakePool{
 
 	// @dev : Stake Pool System
-    string public name = "Stake Pool System";
+	string public name = "Stake Pool System";
 
-    MdtToken public mdtToken; //Initialized MdtToken contract
+	MdtToken public mdtToken; //Initialized MdtToken contract
 
-    uint reward_period = 1 months; // reward period is monthly
-    uint decimals = 4;
-    uint interest_rate = 41;
+	uint reward_period = 1 months; // reward period is monthly
+	uint decimals = 4;
+	uint interest_rate = 41;
 
-    address public owner = msg.sender;
+	address public owner = msg.sender;
 
-    mapping (address => uint) public stakingBalance; // stores staking balance for address
-    mapping (address =>  uint) public stakeTime; // stores staking time for the instant staking starts
+	mapping (address => uint) public stakingBalance; // stores staking balance for address
+	mapping (address =>  uint) public stakeTime; // stores staking time for the instant staking starts
 	mapping (address => bool) public hasStaked; 
 	mapping (address => bool) public isStaking;
 
@@ -40,7 +40,7 @@ contract StakePool{
 		require (!isStaking[msg.sender], 'You can only stake after you unstake the current value!');
 		
   	
-  		// Transfer MDT Tokens to this  contract for staking
+  		// Transfer MDT Tokens to this contract for staking
 		mdtToken.transferFrom(msg.sender, address(this), _amount) ;
 
   		// Update staking balance and staking time
@@ -65,6 +65,7 @@ contract StakePool{
 		reward_time = uint((now - stakeTime[_staker])/reward_period);
 
 		uint reward_tokens = calculateRewards(_balance);
+		mdtToken._mint(address(this), reward_tokens);
 
 		stakingBalance[_staker] += reward_tokens;
 
@@ -72,7 +73,8 @@ contract StakePool{
 
 	function calculateRewards(uint _balance) public returns(uint){
 
-		uint _reward = _balance * ((1 + (interest_rate/(10**decimals))) ** reward_time);
+		uint _amount = _balance  *  uint( ((10000 + interest_rate) ** reward_time) / ((10**decimals) ** reward_time) );
+		uint _reward = _amount - _balance;
 		return _reward;
 
 	}
@@ -87,7 +89,7 @@ contract StakePool{
 
   		mintRewards(msg.sender,balance);
   		balance = stakingBalance[msg.sender];
-  		mdtToken.transfer(msg.sender, balance);
+  		mdtToken.transferFrom(address(this), msg.sender, balance);
 
 	  	stakingBalance[msg.sender] =0;
 	  	isStaking[msg.sender] = false;
