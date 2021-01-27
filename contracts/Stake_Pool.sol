@@ -15,6 +15,8 @@ contract StakePool{
     MdtToken public mdtToken; //Initialized MdtToken contract
 
     uint reward_period = 1 months; // reward period is monthly
+    uint decimals = 4;
+    uint interest_rate = 41;
 
     address public owner = msg.sender;
 
@@ -59,14 +61,19 @@ contract StakePool{
 
 	function mintRewards(address _staker, uint _balance) public {
 
+		
 		reward_time = uint((now - stakeTime[_staker])/reward_period);
 
+		uint reward_tokens = calculateRewards(_balance);
 
-		
+		stakingBalance[_staker] += reward_tokens;
+
 	}
 
-	function calculateRewards() public {
+	function calculateRewards(uint _balance) public returns(uint){
 
+		uint _reward = _balance * ((1 + (interest_rate/(10**decimals))) ** reward_time);
+		return _reward;
 
 	}
 	
@@ -79,7 +86,7 @@ contract StakePool{
   		require (balance > 0, 'There should be some balance!');
 
   		mintRewards(msg.sender,balance);
-
+  		balance = stakingBalance[msg.sender];
   		mdtToken.transfer(msg.sender, balance);
 
 	  	stakingBalance[msg.sender] =0;
