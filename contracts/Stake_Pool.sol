@@ -1,4 +1,4 @@
-pragma solidity >=0.4.17 <0.8.0;
+pragma solidity >=0.4.22 <0.9.0;
 
 //Imported MDT Token from contracts
 import "./MDT_Token.sol";
@@ -14,7 +14,7 @@ contract StakePool{
 
 	MdtToken public mdtToken; //Initialized MdtToken contract
 
-	uint reward_period = 1 months; // reward period is monthly
+	uint reward_period = 30 days; // reward period is 30 days
 	uint decimals = 4;
 	uint interest_rate = 41;
 
@@ -81,7 +81,7 @@ contract StakePool{
 	
 	function unstakeTokens(uint _amount) public{
 
-		require(now > staketime[msg.sender] + 1 months , "You can't unstake the MDT Tokens for a minimum of 1 month!");
+		require(now > staketime[msg.sender] + reward_period , "You can't unstake the MDT Tokens for a minimum of 30 days!");
 
 		uint balance = stakingBalance[msg.sender];
   		
