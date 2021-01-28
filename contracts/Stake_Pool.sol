@@ -93,8 +93,7 @@ contract StakePool{
 
 	  	stakingBalance[msg.sender] =0;
 	  	isStaking[msg.sender] = false;
-
-
+	}
 
 
 }

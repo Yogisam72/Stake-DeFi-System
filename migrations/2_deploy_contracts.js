@@ -1,5 +1,5 @@
-const MdtToken = artifacts.require('MdtToken');
-const StakePool = artifacts.require('StakePool');
+const MdtToken = artifacts.require('MDT_Token');
+const StakePool = artifacts.require('Stake_Pool');
 
 module.exports = async function(deployer, network, accounts) {
 
@@ -12,3 +12,4 @@ module.exports = async function(deployer, network, accounts) {
 	await mdtToken.transfer(accounts[1], '100000')
 	await mdtToken.transfer(accounts[2], '10000')
 	await mdtToken.transfer(accounts[3], '30000')
+}
