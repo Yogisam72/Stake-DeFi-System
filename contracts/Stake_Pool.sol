@@ -21,7 +21,7 @@ contract StakePool{
 	address public owner = msg.sender;
 
 	mapping (address => uint) public stakingBalance; // stores staking balance for address
-	mapping (address =>  uint) public stakeTime; // stores staking time for the instant staking starts
+	mapping (address => uint) public stakeTime; // stores staking time for the instant staking starts
 	mapping (address => bool) public hasStaked; 
 	mapping (address => bool) public isStaking;
 
@@ -33,7 +33,7 @@ contract StakePool{
 
 	}
 
-	function stakeTokens(uint256 _amount) public {
+	function stakeTokens(uint _amount) public {
 
 		require (_amount > 0 , 'Amount cannot be 0!');
 
@@ -73,13 +73,13 @@ contract StakePool{
 
 	function calculateRewards(uint _balance) public returns(uint){
 
-		uint _amount = _balance  *  uint( ((10000 + interest_rate) ** reward_time) / ((10**decimals) ** reward_time) );
+		uint _amount = _balance  *  uint( (((10**decimals) + interest_rate) ** reward_time) / ((10**decimals) ** reward_time) );
 		uint _reward = _amount - _balance;
 		return _reward;
 
 	}
 	
-	function unstakeTokens(uint256 _amount) public{
+	function unstakeTokens(uint _amount) public{
 
 		require(now > staketime[msg.sender] + 1 months , "You can't unstake the MDT Tokens for a minimum of 1 month!");
 

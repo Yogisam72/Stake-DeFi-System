@@ -13,6 +13,6 @@ contract MdtToken is ERC20, ERC20Capped{
 	constructor() ERC20("MindDeft Token", "MDT") //ERC20
 	ERC20Capped(15*(10**24)) //Capped for making final supply of 15 million only
 	public{
-		_mint(msg.sender, initialSupply); //initialized supply
+		_mint(address(this), initialSupply); //initialized supply
 	}
 }
