@@ -68,7 +68,7 @@ contract StakePool{
 		uint reward_time = uint((block.timestamp - stakeTime[_staker])/reward_period);
 
 		uint reward_tokens = calculateRewards(_balance, reward_time);
-		mdtToken._mint(address(this), reward_tokens);
+		mdtToken.mint(address(this), reward_tokens);
 
 		stakingBalance[_staker] += reward_tokens;
 
