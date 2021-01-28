@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+
+
 pragma solidity >=0.4.22 <0.9.0;
 
 //Imported MDT Token from contracts
@@ -45,7 +48,7 @@ contract StakePool{
 
   		// Update staking balance and staking time
 		stakingBalance[msg.sender] += _amount;
-		stakeTime[msg.sender] = now;
+		stakeTime[msg.sender] = block.timestamp;
 
 
   		// Add stakers to the stakers array *ONLY* if they haven't staked already
@@ -62,18 +65,18 @@ contract StakePool{
 	function mintRewards(address _staker, uint _balance) public {
 
 		
-		reward_time = uint((now - stakeTime[_staker])/reward_period);
+		uint reward_time = uint((block.timestamp - stakeTime[_staker])/reward_period);
 
-		uint reward_tokens = calculateRewards(_balance);
+		uint reward_tokens = calculateRewards(_balance, reward_time);
 		mdtToken._mint(address(this), reward_tokens);
 
 		stakingBalance[_staker] += reward_tokens;
 
 	}
 
-	function calculateRewards(uint _balance) public returns(uint){
+	function calculateRewards(uint _balance, uint _rewardTime) public returns(uint){
 
-		uint _amount = _balance  *  uint( (((10**decimals) + interest_rate) ** reward_time) / ((10**decimals) ** reward_time) );
+		uint _amount = _balance  *  uint( (((10**decimals) + interest_rate) ** _rewardTime) / ((10**decimals) ** _rewardTime) );
 		uint _reward = _amount - _balance;
 		return _reward;
 
@@ -81,7 +84,7 @@ contract StakePool{
 	
 	function unstakeTokens(uint _amount) public{
 
-		require(now > staketime[msg.sender] + reward_period , "You can't unstake the MDT Tokens for a minimum of 30 days!");
+		require(block.timestamp > stakeTime[msg.sender] + reward_period , "You can't unstake the MDT Tokens for a minimum of 30 days!");
 
 		uint balance = stakingBalance[msg.sender];
   		
