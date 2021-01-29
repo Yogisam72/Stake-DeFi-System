@@ -17,7 +17,7 @@ contract StakePool{
 
 	MdtToken public mdtToken; //Initialized MdtToken contract
 
-	uint reward_period = 30 days; // reward period is 30 days
+	uint reward_period = 1 minutes; // reward period is 30 days
 	uint decimals = 4;
 	uint interest_rate = 41;
 
@@ -34,6 +34,12 @@ contract StakePool{
 
 		mdtToken = _mdtToken;
 
+	}
+
+	function getBal(address _caller) public view returns(uint256) {
+	    
+	   return mdtToken.balanceOf(_caller);
+	    
 	}
 
 	function stakeTokens(uint _amount) public {
@@ -62,7 +68,7 @@ contract StakePool{
 	}
 	
 
-	function mintRewards(address _staker, uint _balance) public {
+	function mintRewards(address _staker, uint _balance) private {
 
 		
 		uint reward_time = uint((block.timestamp - stakeTime[_staker])/reward_period);
@@ -74,17 +80,21 @@ contract StakePool{
 
 	}
 
-	function calculateRewards(uint _balance, uint _rewardTime) public returns(uint){
-
-		uint _amount = _balance  *  uint( (((10**decimals) + interest_rate) ** _rewardTime) / ((10**decimals) ** _rewardTime) );
-		uint _reward = _amount - _balance;
+	function calculateRewards(uint _balance, uint _rewardTime) public view returns(uint){
+	    
+	    uint amt=_balance;
+	    
+	    for(uint i=0; i<_rewardTime ; i++){
+	        amt = (amt*10041)/10000;
+	    }
+		
+		uint _reward = amt - _balance;
 		return _reward;
-
 	}
 	
-	function unstakeTokens(uint _amount) public{
-
-		require(block.timestamp > stakeTime[msg.sender] + reward_period , "You can't unstake the MDT Tokens for a minimum of 30 days!");
+	function unstakeTokens() public{
+		require(isStaking[msg.sender], "You are not staking anything currently!");
+		require(block.timestamp > stakeTime[msg.sender] + reward_period , "You can't unstake the MDT Tokens for a minimum of 1 minutes!");
 
 		uint balance = stakingBalance[msg.sender];
   		
@@ -92,9 +102,10 @@ contract StakePool{
 
   		mintRewards(msg.sender,balance);
   		balance = stakingBalance[msg.sender];
-  		mdtToken.transferFrom(address(this), msg.sender, balance);
+  		mdtToken.transfer( msg.sender, balance);
 
 	  	stakingBalance[msg.sender] =0;
+	  	stakeTime[msg.sender]= 0;
 	  	isStaking[msg.sender] = false;
 	}
 

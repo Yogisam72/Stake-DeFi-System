@@ -17,10 +17,10 @@ contract MdtToken is ERC20, Ownable{
 
 	constructor() public  ERC20("MindDeft Token", "MDT") 
 	{
-		_mint(address(this), initialSupply); //initialized supply
+		_mint(msg.sender, initialSupply); //initialized supply
 	}
 	
-	function mint(address to, uint256 amount) public onlyOwner {
+	function mint(address to, uint256 amount) public  {
     _mint(to, amount);
     }
     /**
